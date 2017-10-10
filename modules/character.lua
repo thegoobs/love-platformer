@@ -63,8 +63,8 @@ function char:move(dt)
 	char.x, char.y, c, l = world:move(char, x, y)
 
 	for i = 1, l do
-		--if collision is bottom of character
-		if c[i].normal.y == -1 then
+		--if collision is bottom or top of character
+		if c[i].normal.y ~= 0 then
 			char.dy = 0
 		end
 	end

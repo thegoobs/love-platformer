@@ -5,6 +5,7 @@ bump = require('plugins.bump') --platformer AABB collision
 --MODULES
 char = require('modules.character') --main character
 state = require('modules.states') --state updater for objects
+floor = require('modules.floor')
 
 --Model
 function love.load()
@@ -29,9 +30,9 @@ end
 function love.draw()
     love.graphics.print(char.state, 400, 300)
     love.graphics.print(tostring(char.col), 400, 320)
-    love.graphics.print(test, 400, 330)
+    love.graphics.print(floor.img:getWidth(), 400, 330)
 
     char.anim:draw(char.img, char.x, char.y)
-    love.graphics.rectangle("fill", 0, love.graphics.getHeight() - 200, love.graphics.getWidth(), 200)
     love.graphics.rectangle("fill", 50, love.graphics.getHeight() - 275, 100, 25)
+    floor:draw()
 end
