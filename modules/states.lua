@@ -17,7 +17,6 @@ function state:set(obj)
 		for i = 1, l do
 			if obj.dx == c[i].other.dx then
 				s = "STANDBY"
-				d = nil
 			end
 		end
 	end
