@@ -1,11 +1,11 @@
 local char = {
-	id = "character",
+	col_id = "character",
 
 --kinematics
 	x = 0,
 	y = 100,
-	w = 16,
-	h = 16,
+	w = 40,
+	h = 40,
 
 	dx = 4,
 	dy = 2,
@@ -71,26 +71,31 @@ end
 function char:collision_handler()
 	local before_col_dy = char.dy
 	local x, y, c, l = char.x + char.dx, char.y + char.dy, nil, nil
-	char.x, char.y, c, l = world:move(char, x, y)
+	char.x, char.y, c, l = world:move(char, x, y, collision_filter)
 
 	for i = 1, l do
-		if c[i].normal.y > g then
-			char.dy = c[i].normal.y or 0
-			char.col = true
-		else
-			char.dy = 0
-			char.col = false
-		end
-
-		if c[i].normal.x ~= 0 then
-			char.dy = before_col_dy
-			char.col = true
-		end
-
-		if c[i].other.dx ~= nil then
-			if c[i].other.dx ~= 0 then
-				char.x = char.x + c[i].other.dx
+		if c[i].other.col_id == "platform" then -- Only do extra handling for platforms
+			if c[i].normal.y > g then
+				char.dy = c[i].normal.y or 0
+				char.col = true
+			else
+				char.dy = 0
+				char.col = false
 			end
+
+			if c[i].normal.x ~= 0 then
+				char.dy = before_col_dy
+				char.col = true
+			end
+
+			if c[i].other.dx ~= nil then
+				if c[i].other.dx ~= 0 then
+					char.x = char.x + c[i].other.dx
+				end
+			end
+
+		elseif c[i].other.col_id == "trigger" then
+			c[i].other:activate()
 		end
 	end
 

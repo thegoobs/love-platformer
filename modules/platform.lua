@@ -2,35 +2,38 @@ local platform = {}
 
 --constructor
 function platform:new(x, y, w, h, x1, x2, dx, y1, y2, dy)
-	local obj = {x=x, y=y, w=w, h=h, x1=x1, x2=x2, dx=dx, y1=y1, y2=y2, dy=dy}
-
-	function obj:update(dt)
-		if obj.dx ~= nil then
-			obj.x = obj.x + obj.dx
-
-			if obj.x < math.min(obj.x1, obj.x2) or obj.x > math.max(obj.x1, obj.x2) then
-				obj.dx = obj.dx * -1
-			end
-		end
-		if obj.dy ~= nil then
-			obj.y = obj.y + obj.dy
-
-			if obj.y < math.min(obj.y1, obj.y2) or obj.y > math.max(obj.y1, obj.y2) then
-				obj.dy = obj.dy * -1
-			end
-		end
-
-		world:move(obj, obj.x, obj.y)
-	end
-
-
-	function obj:draw()
-		love.graphics.rectangle("fill", obj.x, obj.y, obj.w, obj.h)
-	end
-
+	local obj = {x=x, y=y, w=w, h=h, x1=x1, x2=x2, dx=dx, y1=y1, y2=y2, dy=dy, col_id = "platform"}
+	setmetatable(obj, self)
+	self.__index = self
+	
 	world:add(obj, obj.x, obj.y, obj.w, obj.h)
 	return obj
 end
+
+
+	function platform:update(dt)
+		if self.dx ~= nil then
+			self.x = self.x + self.dx
+
+			if self.x < math.min(self.x1, self.x2) or self.x > math.max(self.x1, self.x2) then
+				self.dx = self.dx * -1
+			end
+		end
+		if self.dy ~= nil then
+			self.y = self.y + self.dy
+
+			if self.y < math.min(self.y1, self.y2) or self.y > math.max(self.y1, self.y2) then
+				self.dy = self.dy * -1
+			end
+		end
+
+		world:move(self, self.x, self.y)
+	end
+
+
+	function platform:draw()
+		love.graphics.rectangle("fill", self.x, self.y, self.w, self.h)
+	end
 
 
 return platform
