@@ -14,16 +14,15 @@ function trigger:new(x, y, w, h)
 	setmetatable(t, self)
 	self.__index = self
 
-	world:add(t, t.x, t.y, 10, 10)
-
 	return t
 end
 
 function trigger:activate()
-	love.graphics.setColor(0, 255, 0, 255)
+	--placeholder whatup
 end
 
 function trigger:update(dt)
+	self.activated = false
 end
 
 function trigger:draw()

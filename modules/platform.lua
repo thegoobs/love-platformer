@@ -5,8 +5,6 @@ function platform:new(x, y, w, h, x1, x2, dx, y1, y2, dy)
 	local obj = {x=x, y=y, w=w, h=h, x1=x1, x2=x2, dx=dx, y1=y1, y2=y2, dy=dy, col_id = "platform"}
 	setmetatable(obj, self)
 	self.__index = self
-	
-	world:add(obj, obj.x, obj.y, obj.w, obj.h)
 	return obj
 end
 

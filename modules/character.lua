@@ -94,7 +94,7 @@ function char:collision_handler()
 				end
 			end
 
-		elseif c[i].other.col_id == "trigger" then
+		elseif c[i].other.col_id == "trigger" and game.just_moved == false then
 			c[i].other:activate()
 		end
 	end

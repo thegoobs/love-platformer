@@ -12,6 +12,7 @@ item 		= require('modules.item')
 game 		= require('modules.game')
 room		= require('modules.room')
 trigger		= require('modules.trigger')
+door 		= require('modules.door')
 
 collision_filter = function(item, other)
 	if other.col_id == "trigger" then
@@ -31,9 +32,10 @@ function love.load()
 
 	-- bump world
 	world = bump.newWorld(64)
-	world:add(char, char.x, char.y, char.w, char.h)
 
 	r1 = room:new()
+	r2 = room:new()
+
 	r1:set_platforms({
 		platform:new(50, love.graphics.getHeight() - 275, 100, 25),
 		platform:new(200, love.graphics.getHeight() - 350, 100, 25),
@@ -43,9 +45,22 @@ function love.load()
 		platform:new(0, love.graphics.getHeight() - 200, love.graphics.getWidth(), 200)
 	})
 
-	scene:add(char)
-	scene:add(r1)
-	scene:add(trigger:new(300, 300, 10, 10))
+	r1:set_doors({
+		door:new(love.graphics.getWidth() - 10, 300, r1, r2)
+	})
+
+
+	r2:set_doors({
+		door:new(10, 300, r2, r1)
+	})
+
+	r2:set_platforms({
+		platform:new(0, love.graphics.getHeight() - 200, love.graphics.getWidth(), 200)
+	})
+
+	game.curr_room = r1
+
+	game:start()
 end
 
 -- Controller: updates on tick dt

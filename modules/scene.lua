@@ -6,18 +6,25 @@ function scene:add(obj)
 end
 
 function scene:find(obj)
-	for _, i in ipairs(scene.objects) do
-		if i == obj then
-			return true
+	for i = 1, #scene.objects do
+		if scene.objects[i] == obj then
+			return i
 		end
 	end
 
-	return false
+	return -1
 end
 
 function scene:remove(obj)
-	if scene:find(obj) then
-		table.remove(scene.objects, obj)
+	local index = scene:find(obj)
+	if index ~= -1 then
+		table.remove(scene.objects, index)
+	end
+end
+
+function scene:flush(obj)
+	for i = 1, #scene.objects do
+		table.remove(scene.objects)
 	end
 end
 
