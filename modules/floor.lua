@@ -12,11 +12,12 @@ for i = 0, 3 do
 end
 
 function floor:draw()
-	for i = 0, love.graphics.getWidth(), 64 do
-		love.graphics.draw(floor.img, floor.grass[((i/64) % 4) + 1], i, love.graphics.getHeight() - 200)
-		love.graphics.draw(floor.img, floor.dirt[((i/64) % 4) + 1], i, love.graphics.getHeight() - 200 + 64)
+	-- for i = 0, love.graphics.getWidth(), 64 do
+	-- 	love.graphics.draw(floor.img, floor.grass[((i/64) % 4) + 1], i, love.graphics.getHeight() - 200)
+	-- 	love.graphics.draw(floor.img, floor.dirt[((i/64) % 4) + 1], i, love.graphics.getHeight() - 200 + 64)
+	-- end
 
-	end
+	love.graphics.rectangle("line", 0, love.graphics.getHeight() - 200, love.graphics.getWidth(), 200)
 end
 
 

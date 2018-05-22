@@ -1,34 +1,33 @@
-local char = {}
-char = {
-		id = "character",
+local char = {
+	id = "character",
 
 --kinematics
-		x = 0,
-		y = 100,
-		w = 16,
-		h = 16,
+	x = 0,
+	y = 100,
+	w = 16,
+	h = 16,
 
-		dx = 4,
-		dy = 2,
+	dx = 4,
+	dy = 2,
 
 --animations
-		img = love.graphics.newImage("character_base.png"),
-		anim = nil,
+	img = love.graphics.newImage("character_base.png"),
+	anim = nil,
 
 --state machine
-		state = "STANDBY",
-		dir = "R",
-		col = false,
+	state = "STANDBY",
+	dir = "R",
+	col = false,
 
 --equipment
-		equip = {
-			head = nil,
-			chest = nil,
-			arm_r = nil,
-			arm_l = nil,
-			feet = nil
-		}
+	equip = {
+		head = nil,
+		chest = nil,
+		arm_r = nil,
+		arm_l = nil,
+		feet = nil
 	}
+}
 
 	char.grid = anim8.newGrid(40, 40, char.img:getWidth(), char.img:getHeight())
 	char.standby = anim8.newAnimation(char.grid('1-4', 1), 0.2)
@@ -58,14 +57,25 @@ end
 --function to set states based on the priority of states
 function char:move(dt)
 	char.dy = char.dy + g
+	local before_col_dy = char.dy
 
 	local x, y, c, l = char.x + char.dx, char.y + char.dy, nil, nil
 	char.x, char.y, c, l = world:move(char, x, y)
 
 	for i = 1, l do
 		--if collision is bottom or top of character
-		if c[i].normal.y ~= 0 then
+		char.dx = c[i].other.dx or 0
+		if c[i].normal.y > g then
+			char.dy = c[i].normal.y
+			char.col = true
+		else
 			char.dy = 0
+			char.col = false
+		end
+
+		if c[i].normal.x ~= 0 then
+			char.dy = before_col_dy
+			char.col = true
 		end
 	end
 
@@ -74,20 +84,23 @@ function char:move(dt)
 	elseif love.keyboard.isDown("d") then
 		char.dx = 4
 	else
-		char.dx = 0
+		char.dx = 0 --stop moving dawg, tight jumpies
 	end
 
 	if love.keyboard.isDown("w") and char.state ~= "JUMP" and char.state ~= "FALL" then
-		char.y = char.y - 10
-		char.dy = -10
-		g = 0.5
+		char.dy = -10 -- negative is up
 	end
 end
 
 function char:update(dt)
-	char:move(dt)
+
 	char.state, char.dir = state:set(char)
 	char:animate(dt)
+	char:move(dt)
+end
+
+function char:draw()
+	char.anim:draw(char.img, char.x, char.y)
 end
 
 return char
