@@ -93,6 +93,8 @@ function char:collision_handler()
 			end
 		end
 	end
+
+	if l == 0 then char.col = false end
 end
 
 --function to set states based on the priority of states

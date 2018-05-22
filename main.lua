@@ -45,9 +45,6 @@ end
 -- View
 function love.draw()
 	love.graphics.print(char.state, 100, 100)
-	if char.col == true then
-		love.graphics.print("yes", 100, 200)
-	end
     floor:draw()
     scene:draw()
 end
