@@ -1,7 +1,10 @@
-local room = {}
+local room = {
+	id_ctr = 0 -- Keep track of how many rooms are made
+}
 
 function room:new()
 	local r = {
+		id = room.id_ctr,	-- unique id used for doorwars and connecting the map
 		platforms = nil, 	-- all room structure
 		statics = nil, 		-- all room decorations
 		enemies = nil, 		-- all room enemies
@@ -12,6 +15,7 @@ function room:new()
 	setmetatable(r, self)
 	self.__index = self
 
+	room.id_ctr = room.id_ctr + 1
 	return r
 end
 
