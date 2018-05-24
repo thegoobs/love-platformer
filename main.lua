@@ -35,6 +35,7 @@ function love.load()
 
 	r1 = room:new()
 	r2 = room:new()
+	r3 = room:new()
 
 	r1:set_platforms({
 		platform:new(50, love.graphics.getHeight() - 275, 100, 25),
@@ -46,16 +47,25 @@ function love.load()
 	})
 
 	r1:set_doors({
-		door:new(love.graphics.getWidth() - 10, 300, r1, r2)
+		door:new(love.graphics.getWidth() - 10, 320, r1, r2),
+		door:new(love.graphics.getWidth() - 10, 150, r1, r3)
 	})
 
-
 	r2:set_doors({
-		door:new(10, 300, r2, r1)
+		door:new(-10, 320, r2, r1)
 	})
 
 	r2:set_platforms({
 		platform:new(0, love.graphics.getHeight() - 200, love.graphics.getWidth(), 200)
+	})
+
+	r3:set_platforms({
+		platform:new(0, love.graphics.getHeight() - 200, love.graphics.getWidth(), 200)
+	})
+
+
+	r3:set_doors({
+		door:new(-10, 300, r3, r1)
 	})
 
 	game.curr_room = r1
@@ -65,11 +75,11 @@ end
 
 -- Controller: updates on tick dt
 function love.update(dt)
-	scene:update(dt)
+	scene:update(dt) -- each game object's update function is fired on tick
 end
 
 -- View: Where all rendering happens
 function love.draw()
-	love.graphics.print(char.state, 100, 100)
-    scene:draw()
+	love.graphics.print(game.curr_room.id, 100, 100)
+    scene:draw() --this is where all game objects are drawn
 end

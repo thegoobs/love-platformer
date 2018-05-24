@@ -12,12 +12,6 @@ function door:new(x, y, r1, r2)
 end
 
 function door:update(dt)
-	--check if character leaves
-	local x, y, c, l = world:check(self, self.x, self.y)
-
-	if l == 0 and game.just_moved == true then
-		game.just_moved = false
-	end
 end
 
 --because trigger and door share this function name, the function will be overwritten

@@ -9,7 +9,9 @@ function room:new()
 		doors = nil, 		-- all room doors
 		statics = nil, 		-- all room decorations
 		enemies = nil, 		-- all room enemies
-		collectibles = nil 	-- all room collectibles
+		collectibles = nil, -- all room collectibles
+		next_rooms_rooms = nil
+
 	}
 
 	-- Object/class inheritence with two lines of code
@@ -54,6 +56,21 @@ end
 -- Spot check to add a platform to an already existing table
 function room:add_platform(platform)
 	table.insert(self.platforms, platform)
+end
+
+function room:add_door(door)
+	table.insert(self.doors, door)
+	table.insert(self.next_rooms, door.r2) --add the next room to the current room's next table
+end
+
+function room:find_door(r1, r2)
+	for _, i in ipairs(self.doors) do
+		if i.r1 == r1 and i.r2 == r2 then
+			return i
+		end
+	end
+
+	return false
 end
 
 -- Random generation of rooms
