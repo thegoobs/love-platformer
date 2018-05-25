@@ -5,7 +5,7 @@ bump 		= require('plugins.bump') --platformer AABB collision
 collisions = 0
 --MODULES
 scene		= require('modules.scene')
-char 		= require('modules.character') --main character
+character 	= require('modules.character') --main character
 state 		= require('modules.states') --state updater for objects
 particle 	= require('modules.particle')
 platform 	= require('modules.platform')
@@ -33,6 +33,7 @@ function love.load()
 
 	g = 0.5 -- gravity is positive because Y increases as it goes down
 
+	char = character:new()
 	-- bump world
 	world = bump.newWorld(64)
 
