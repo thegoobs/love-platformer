@@ -10,6 +10,14 @@ local char = {
 	dx = 4,
 	dy = 2,
 
+	max = {
+		dx = 4,
+		dy = 25,
+
+		wall_jump_dx = 2,
+		wall_jump_dy = 6
+	},
+
 --animations
 	img = love.graphics.newImage("character_base.png"),
 	anim = nil,
@@ -18,6 +26,7 @@ local char = {
 	state = "STANDBY",
 	dir = "R",
 	col = false,
+	wall_jump = true, --true means ready to wall jump
 
 --equipment
 	equip = {
@@ -29,10 +38,11 @@ local char = {
 	}
 }
 
-char.grid = anim8.newGrid(40, 40, char.img:getWidth(), char.img:getHeight())
+char.grid = anim8.newGrid(char.w, char.h, char.img:getWidth(), char.img:getHeight())
 char.standby = anim8.newAnimation(char.grid('1-4', 1), 0.2)
 char.run = anim8.newAnimation(char.grid('1-4', 2), 0.125)
 char.jump = anim8.newAnimation(char.grid(1, 3), 0.01)
+char.wall_cling = anim8.newAnimation(char.grid(1, 4), 0.01)
 
 char.anim = char.standby --default
 
@@ -43,6 +53,8 @@ function char:animate(dt)
 		char.anim = char.run
 	elseif char.state == "JUMP" or char.state == "FALL" then
 		char.anim = char.jump
+	elseif char.state == "WALL_CLING" then
+		char.anim = char.wall_cling
 	end
 
 	 if char.dir == "L" and char.anim.flippedH == false then
@@ -55,16 +67,33 @@ function char:animate(dt)
 end
 
 function char:key_handler()
-	if love.keyboard.isDown("a") then
+	if love.keyboard.isDown("a") and not love.keyboard.isDown("d") then
 		char.dx = -4
-	elseif love.keyboard.isDown("d") then
+	elseif love.keyboard.isDown("d") and not love.keyboard.isDown("a") then
 		char.dx = 4
 	else
-		char.dx = 0 --stop moving dawg, tight jumpies
+		if math.abs(char.dx) ~= char.max.wall_jump_dx then --if wall jump, keep going anyways
+			char.dx = 0 --stop moving dawg, tight jumpies
+		end
+
+		if char.state == "RUN" and char.wall_jump == true then
+			char.dx = 0
+		end
 	end
 
-	if love.keyboard.isDown("w") and char.state ~= "JUMP" and char.state ~= "FALL" then
-		char.dy = -10 -- negative is up
+	if love.keyboard.isDown("w") then
+		if char.state == "STANDBY" or char.state == "RUN" then
+			char.dy = -10 -- negative is up
+		elseif char.state == "WALL_CLING" and char.wall_jump == true then
+			char.wall_jump = false
+			char.dy = -1 * char.max.wall_jump_dy
+
+			if char.dir == "R" then
+				char.dx = -1 * char.max.wall_jump_dx
+			else
+				char.dx = char.max.wall_jump_dx
+			end
+		end
 	end
 end
 
@@ -81,6 +110,7 @@ function char:collision_handler()
 			else
 				char.dy = 0
 				char.col = false
+				char.wall_jump = true
 			end
 
 			if c[i].normal.x ~= 0 then
@@ -88,10 +118,8 @@ function char:collision_handler()
 				char.col = true
 			end
 
-			if c[i].other.dx ~= nil then
-				if c[i].other.dx ~= 0 then
-					char.x = char.x + c[i].other.dx
-				end
+			if c[i].other.dx ~= 0 then
+				char.x = char.x + c[i].other.dx
 			end
 
 		elseif c[i].other.col_id == "trigger" and game.just_moved == false then
@@ -109,6 +137,10 @@ function char:move(dt)
 
 	char:key_handler()
 	char:collision_handler()
+
+	if char.state == "WALL_CLING" then
+		char.dy = 0
+	end
 
 end
 
