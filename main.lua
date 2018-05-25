@@ -48,7 +48,7 @@ function love.load()
 
 	r1:set_doors({
 		door:new(love.graphics.getWidth() - 10, 320, r1, r2),
-		door:new(love.graphics.getWidth() - 10, 150, r1, r3)
+		door:new(love.graphics.getWidth() - 10, 100, r1, r3)
 	})
 
 	r2:set_doors({
@@ -82,4 +82,10 @@ end
 function love.draw()
 	love.graphics.print(game.curr_room.id, 100, 100)
     scene:draw() --this is where all game objects are drawn
+end
+
+function love.keypressed(key, scancode, isrepeat)
+	if scancode == "r" then
+		game:reset()
+	end
 end
