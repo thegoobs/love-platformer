@@ -14,8 +14,9 @@ local char = {
 		dx = 4,
 		dy = 25,
 
-		wall_jump_dx = 2,
-		wall_jump_dy = 6
+		jump_dx = 2,
+		jump_dy = 10,
+		jumps = 2
 	},
 
 --animations
@@ -27,6 +28,7 @@ local char = {
 	dir = "R",
 	col = false,
 	wall_jump = true, --true means ready to wall jump
+	curr_jump = 0, --true means ready to double jump
 
 --equipment
 	equip = {
@@ -66,33 +68,41 @@ function char:animate(dt)
 	char.anim:update(dt)
 end
 
-function char:key_handler()
+function char:move_x(dx)
+	char.dx = dx
+end
+
+function char:move_y()
+	if char.state == "WALL_CLING" and char.wall_jump == true then
+		char.wall_jump = false
+		char.dy = -1 * char.max.jump_dy
+
+		if char.dir == "R" then
+			char.dx = -1 * char.max.jump_dx
+		else
+			char.dx = char.max.jump_dx
+		end
+	else
+		if char.curr_jump < char.max.jumps then
+			char.dy = -10
+			char.curr_jump = char.curr_jump + 1
+		end
+	end
+end
+
+
+function char:key_handler(scancode, isrepeat)
 	if love.keyboard.isDown("a") and not love.keyboard.isDown("d") then
 		char.dx = -4
 	elseif love.keyboard.isDown("d") and not love.keyboard.isDown("a") then
 		char.dx = 4
 	else
-		if math.abs(char.dx) ~= char.max.wall_jump_dx then --if wall jump, keep going anyways
+		if math.abs(char.dx) ~= char.max.jump_dx then --if wall jump, keep going anyways
 			char.dx = 0 --stop moving dawg, tight jumpies
 		end
 
 		if char.state == "RUN" and char.wall_jump == true then
 			char.dx = 0
-		end
-	end
-
-	if love.keyboard.isDown("w") then
-		if char.state == "STANDBY" or char.state == "RUN" then
-			char.dy = -10 -- negative is up
-		elseif char.state == "WALL_CLING" and char.wall_jump == true then
-			char.wall_jump = false
-			char.dy = -1 * char.max.wall_jump_dy
-
-			if char.dir == "R" then
-				char.dx = -1 * char.max.wall_jump_dx
-			else
-				char.dx = char.max.wall_jump_dx
-			end
 		end
 	end
 end
@@ -107,10 +117,11 @@ function char:collision_handler()
 			if c[i].normal.y > g then
 				char.dy = c[i].normal.y or 0
 				char.col = true
-			else
+			elseif c[i].normal.y < 0 then
 				char.dy = 0
 				char.col = false
-				char.wall_jump = true
+				char.wall_jump = true -- allow for new wall bounce
+				char.curr_jump = 0 -- reset jumps
 			end
 
 			if c[i].normal.x ~= 0 then

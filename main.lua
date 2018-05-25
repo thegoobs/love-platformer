@@ -83,18 +83,17 @@ end
 
 -- View: Where all rendering happens
 function love.draw()
-	love.graphics.print(game.curr_room.id, 100, 100)
-	love.graphics.print(char.state, 100, 125)
-	love.graphics.print(char.dir, 100, 150)
-	love.graphics.print(char.dx .. ", " .. char.dy, 100, 175)
-	if char.wall_jump == true then
-		love.graphics.print("yes", 100, 200)
-	end
     scene:draw() --this is where all game objects are drawn
 end
 
 function love.keypressed(key, scancode, isrepeat)
-	if scancode == "r" then
-		game:reset()
+	if isrepeat == false then
+		if scancode == "r" then
+			game:reset()
+		end
+	end
+
+	if scancode == "w" and isrepeat == false then
+		char:move_y()
 	end
 end
